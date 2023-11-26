@@ -79,7 +79,3 @@ class EventRequests():
         location_events = [[i['name'], i['description'], self.formatDatetime(i['startDatetime'])] for i in all_events if i['organizationId'] == location_id]
         logging.info(f"Retreieved the following events {location_events}")
         return location_events
-    
-
-# req = Requests().getEvents(80126)
-# print(req)

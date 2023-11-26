@@ -1,6 +1,6 @@
 import requests
 import os
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 import logging
 import json
 from datetime import datetime
@@ -46,7 +46,6 @@ class CardRequests():
     
     def handleCardFace(self, key):
         if self.card_face_bool:
-            # return self.card['card_faces'][0][key]
             try:
                 return self.card['card_faces'][0][key], self.card['card_faces'][1][key]
             except KeyError:
@@ -73,10 +72,3 @@ class CardRequests():
                 return self.card[attr]
             except KeyError as e:
                 logging.info(e)
-        
-
-# card_class = CardRequests()
-# card_object = card_class.getCard('realmwalker')
-
-# print(card_class.getCardAttr('image_uris'))
-# # print(f"{card_class.getCardAttr('image_uris')[0]['normal']}")

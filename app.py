@@ -4,7 +4,6 @@ import sys
 import re
 import discord
 from discord.ext import commands
-from dotenv import load_dotenv
 import logging
 
 logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
@@ -12,10 +11,9 @@ logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(mes
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(SCRIPT_DIR))
 
-from wizard_event_scrapper import Database, Requests
+from wizard_event_scrapper import Requests
 from scryfall import Requests as ScryfallRequests
 
-load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 
@@ -92,37 +90,7 @@ class DiscordBot(commands.Bot):
             else:
                 await message.channel.send(f"No events found at {loc_name}")
 
-        # if message.content.startswith('[['):
-        #     card_name = message.content.split("[[")[1].split("]]")[0]
-        #     print(card_name)
-        #     card_object = ScryfallRequests.CardRequests().getCard(card_name)
-        #     try:
-        #         await message.channel.send(
-        #             card_object['image_uris']['normal']
-        #         )
-        #         await message.channel.send(
-        #             [f"{card_object['name']} TCGPlayer Link"](card_object['purchase_uris']['tcgplayer'])
-        #         )
-        #     except:
-        #         await message.channel.send(
-        #             card_object['details']
-        #         )
-
         if message.content.startswith('[['):
-            # card_name = message.content.split("[[")[1].split("]]")[0]
-            # print(card_name)
-            # card_object = ScryfallRequests.CardRequests().getCard(card_name)
-            # try:
-            #     await message.channel.send(
-            #         card_object['image_uris']['normal']
-            #     )
-            #     await message.channel.send(
-            #         [f"{card_object['name']} TCGPlayer Link"](card_object['purchase_uris']['tcgplayer'])
-            #     )
-            # except:
-            #     await message.channel.send(
-            #         card_object['details']
-            #     )
             card_name = message.content.split("[[")[1].split("]]")[0]
             card_class = ScryfallRequests.CardRequests()
             card_object = card_class.getCard(card_name)
@@ -133,6 +101,8 @@ class DiscordBot(commands.Bot):
                 name_1 = card_class.getCardAttr('name')[1]
                 uri = card_class.getCardAttr('uri')
                 logging.info(uri)
+
+                # this needs a lot of work
                 try:
                     mana_cost_0 = card_class.getCardAttr('mana_cost')[0]
                     mana_cost_1 = card_class.getCardAttr('mana_cost')[1]
@@ -215,70 +185,3 @@ class DiscordBot(commands.Bot):
 
 bot = DiscordBot()
 bot.run(TOKEN)
-
-
-
-# client = discord.Client(intents = discord.Intents.all())
-
-# @client.event
-# async def on_ready():
-#     for guild in client.guilds:
-#         if guild.name == GUILD:
-#             break
-
-#     print(
-#         f'{client.user} is connected to the following guild:\n'
-#         f'{guild.name}(id: {guild.id})'
-#     )
-
-# @client.event
-# async def on_message(message):
-
-#     print(message.content)
-
-#     if message.author == client.user:
-#         return
-
-#     def check_zip_code(text):
-#         m = re.search(r'(?!\A)\b\d{5}(?:-\d{4})?\b', text)
-#         if m:
-#             return m.group(0)
-#         else:
-#             logging.info("The request doesn't contain a zip code. Please provide on in your next query.")
-
-#     def check_location(text):
-#         location = re.search(r'\[.*?\]', text).group(0)
-#         return location[1:][:len(location)-2].lower()
-
-#     if '!location_bot' in message.content:
-#         zip_code = check_zip_code(message.content)
-#         response = f"I've found the following location events for {zip_code}"
-#         logging.info(response)
-#         locations = Requests.EventRequests().getLocations(zip_code)
-#         for location in locations:
-#             # print(f"{event}")
-#             await message.channel.send(
-#                 f"""
-#                 {location['name']}
-#                 """
-#             )
-
-#     if '!event_bot' in message.content:
-#         # location = re.findall(r'\[.*?\]', message.content)
-#         loc_name = check_location(message.content)
-#         logging.info(f"Getting events for {loc_name}")
-#         loc_id = Requests.EventRequests().getLocationId(loc_name, 80126)
-#         loc_events = Requests.EventRequests().getLocationEvents(loc_id, 80126)
-#         if len(loc_events) > 0:
-#             for event in loc_events:
-#                 await message.channel.send(
-#                     f"{event[0]}\n"
-#                     f"{event[1]}\n"
-#                     f"{event[2]}\n"
-#                     "----------------------------------"
-#                     )
-#         else:
-#             await message.channel.send(f"No events found at {loc_name}")
-
-
-# client.run(TOKEN)
